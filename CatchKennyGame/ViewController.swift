@@ -14,6 +14,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var timeLabel: UILabel!
     
     var timer = Timer()
+    var posTimer = Timer()
     var counter = 0
     var score = 0
     var currentHighScore = UserDefaults.standard.object(forKey: "highScore") as? Int
@@ -60,10 +61,10 @@ class ViewController: UIViewController {
     @objc func countDown() {
         timeLabel.text = "\(counter)"
         counter -= 1
-        changeImagePos()
         
         if counter < 0 {
             timer.invalidate()
+            posTimer.invalidate()
             if currentHighScore == nil || score > currentHighScore! {
                 saveHighScore()
             }
@@ -71,7 +72,7 @@ class ViewController: UIViewController {
         }
     }
     
-    func changeImagePos() {
+    @objc func changeImagePos() {
         imageView.frame.origin.x = positionsX[Int.random(in: 0...2)]
         imageView.frame.origin.y = positionsY[Int.random(in: 0...2)]
     }
@@ -89,6 +90,7 @@ class ViewController: UIViewController {
         timeLabel.text = "\(counter)"
         scoreLabel.text = "Score: \(score)"
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(countDown), userInfo: nil, repeats: true)
+        posTimer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(changeImagePos), userInfo: nil, repeats: true)
     }
 }
 
